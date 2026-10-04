@@ -162,7 +162,89 @@ code{background:var(--chip);padding:1px 5px;border-radius:5px;font-size:.85em}
 .lr textarea{width:100%;min-height:54px;font-size:.86rem}
 .lr.miss .m{color:var(--mut);font-style:italic}
 #dfound{font-size:.8rem;color:var(--mut);min-height:1.2em}
-</style></head><body><main>
+</style><link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style id="jd-theme">
+/* ===== 단어장 관리: 도장 문서 테마 ===== */
+:root{--bg:#eef0f3;--card:#ffffff;--ink:#121418;--mut:#5d6370;--line:#d6dae1;--acc:#d7262b;--chip:#f3f4f6;--ok:#1d7a4c;--warn:#a86a00;--blue:#1f4fbf}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111317;--card:#1a1d23;--ink:#eef0f4;--mut:#a2a8b4;--line:#2e333c;--acc:#ff5a52;--chip:#23272f;--ok:#4cc38a;--warn:#e6a93a;--blue:#7aa2ff}}
+body{font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif !important}
+h1{font-family:"Black Han Sans","Noto Sans KR",sans-serif !important;font-weight:400 !important;font-size:30px !important;letter-spacing:0 !important;position:relative;padding-bottom:12px !important;margin-bottom:6px !important}
+h1::after{content:"";position:absolute;left:0;bottom:0;width:96px;height:6px;background:linear-gradient(90deg,#d7262b 50%,#1f4fbf 50%)}
+h2,h3{font-family:"Black Han Sans","Noto Sans KR",sans-serif !important;font-weight:400 !important;letter-spacing:0 !important}
+.card{border-radius:8px !important;box-shadow:none !important;border:1px solid var(--line) !important}
+.tab{border-radius:6px !important;border:1.5px solid var(--ink) !important;background:var(--card) !important;font-weight:700 !important}
+.tab.on,.tab.active,.tab[aria-selected="true"]{background:var(--ink) !important;color:var(--card) !important}
+.chips button,.filters button,.chip{border-radius:6px !important}
+.cho,.syl{border-radius:6px !important}
+button{transition:transform 90ms ease-out}
+button:active{transform:translateY(1px)}
+.drop{border-radius:8px !important}
+.stats > *{border-radius:6px !important}
+</style>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffffff">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="단어장">
+<style id="jd-app-css">
+#jd-splash{position:fixed;inset:0;z-index:2147483646;background:#ffffff;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease-out,visibility .5s}
+#jd-splash img{width:min(44vw,210px);height:auto;border-radius:22%;box-shadow:0 10px 30px rgba(0,0,0,.18);animation:jdPop .6s cubic-bezier(.2,1.2,.4,1) both}
+#jd-splash.out{opacity:0;visibility:hidden}
+@keyframes jdPop{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}
+#jd-install{position:fixed;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:2147482999;display:flex;align-items:center;gap:6px;background:#111216;color:#fff;border-radius:999px;padding:5px 5px 5px 12px;font:700 12px 'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+#jd-install button{border:0;border-radius:999px;padding:7px 11px;font:700 12px 'Noto Sans KR',sans-serif;cursor:pointer}
+#jd-install .go{background:#d7262b;color:#fff}#jd-install .x{background:#2c2e36;color:#fff}
+#jd-help{position:fixed;inset:0;z-index:2147483645;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}
+#jd-help .bx{background:#fff;color:#111216;width:min(520px,100%);max-height:90vh;overflow:auto;border-radius:16px 16px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom,0px));font:15px/1.6 'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif}
+#jd-help b.t{display:block;font-size:19px;margin-bottom:6px}
+#jd-help .c{background:#f2f3f6;border-radius:10px;padding:10px 12px;margin-top:10px;font-size:14px}
+#jd-help button{margin-top:14px;width:100%;border:0;border-radius:10px;background:#d7262b;color:#fff;font:700 15px 'Noto Sans KR',sans-serif;padding:13px;cursor:pointer}
+@media (prefers-reduced-motion: reduce){#jd-splash img{animation:none}#jd-splash{transition:none}}
+</style>
+<script>
+(function(){
+  var t0=Date.now();
+  function hide(){ var s=document.getElementById("jd-splash"); if(!s||s.classList.contains("out")) return; s.classList.add("out"); setTimeout(function(){ if(s.parentNode) s.parentNode.removeChild(s); },700); }
+  window.addEventListener("load",function(){ setTimeout(hide,Math.max(0,750-(Date.now()-t0))); });
+  setTimeout(hide,4000);
+  if("serviceWorker" in navigator){
+    var hadCtrl=!!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener("controllerchange",function(){
+      if(!hadCtrl) return; try{ if(sessionStorage.getItem("jd-sw-reloaded")) return; sessionStorage.setItem("jd-sw-reloaded","1"); }catch(_){}
+      location.reload();
+    });
+  }
+  if("serviceWorker" in navigator){ window.addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); }); }
+  var KEY="jd-install-off2-wordbook", NAME="단어장", dp=null;
+  var standalone=(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
+  var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  window.addEventListener("beforeinstallprompt",function(e){ e.preventDefault(); dp=e; pill(); });
+  function help(){
+    var w=document.createElement("div"); w.id="jd-help";
+    w.innerHTML="<div class='bx'><b class='t'>"+NAME+" 앱으로 설치하기</b>설치하면 주소창 없이 앱처럼 열려요."+
+      "<div class='c'><b>갤럭시 · 크롬</b><br>오른쪽 위 ⋮ → <b>홈 화면에 추가</b> → <b>설치</b></div>"+
+      "<div class='c'><b>삼성 인터넷</b><br>아래 ≡ → <b>현재 페이지 추가</b> → <b>홈 화면</b></div>"+
+      "<div class='c'><b>아이폰 사파리</b><br>아래 공유 버튼 → <b>홈 화면에 추가</b></div>"+
+      "<div class='c'><b>\"이미 설치되어 있습니다\"가 나오면</b><br>휴대폰 <b>설정 → 애플리케이션</b>에서 <b>"+NAME+"</b>을(를) 찾아 삭제한 뒤 다시 설치해 주세요. 아이콘을 꾹 눌러 \"홈 화면에서 삭제\"만 하면 앱은 남아 있어요.</div>"+
+      "<button type='button'>확인</button></div>";
+    w.addEventListener("click",function(e){ if(e.target===w||e.target.tagName==="BUTTON") w.remove(); });
+    document.body.appendChild(w);
+  }
+  function pill(){
+    if(standalone||document.getElementById("jd-install")) return; try{ if(localStorage.getItem(KEY)) return; }catch(_){}
+    var b=document.createElement("div"); b.id="jd-install"; b.innerHTML="<span>앱으로 설치</span><button class='go' type='button'>설치</button><button class='x' type='button' aria-label='닫기'>✕</button>";
+    b.querySelector(".go").onclick=function(){ if(dp){ var d=dp; dp=null; d.prompt(); d.userChoice.then(function(r){ if(r&&r.outcome==="accepted") b.remove(); }); } else help(); };
+    b.querySelector(".x").onclick=function(){ b.remove(); try{ localStorage.setItem(KEY,"1"); }catch(_){} };
+    document.body.appendChild(b);
+  }
+  if(isIOS) window.addEventListener("load",function(){ setTimeout(pill,1200); });
+  window.addEventListener("appinstalled",function(){ var b=document.getElementById("jd-install"); if(b) b.remove(); });
+  window.jdInstallHelp=help;
+
+})();
+</script></head><body>
+<div id="jd-splash" aria-hidden="true"><img src="icon-512.png" alt=""></div><main>
 <h1>📚 끝말잇기 단어장 관리</h1>
 <p class="sub">초성별로 단어 보기 · 단어/뜻 추가·수정 · 욕설과 이상한 단어 정리 · 게임용 사전 파일 만들기</p>
 
@@ -490,7 +572,8 @@ code{background:var(--chip);padding:1px 5px;border-radius:5px;font-size:.85em}
     <label class="row muted" style="margin:6px 0"><input type="checkbox" id="gsus"> 아직 확인 안 한 의심 단어도 빼기</label>
     <label class="row muted" style="margin:6px 0"><input type="checkbox" id="genc" checked> 위키백과·위키데이터·나무위키에서 찾은 뜻의 단어도 빼기 (어인정 전용으로)</label>
     <label class="row muted" style="margin:6px 0"><input type="checkbox" id="gdial" checked> 방언·북한어·옛말은 빼기 (위 🙌 어인정 전용 단어장으로 따로 넣으세요 · 📦 띄어 쓴 말은 원래 단어장에 없어서 여기 안 들어가요)</label>
-    <label class="row muted" style="margin:6px 0"><input type="checkbox" id="gverb" checked> <b>동사·형용사도 dict2(어인정)에 넣기</b> (게임 어인정 모드에서 "동사·형용사 쓰기"를 체크해야 나와요)</label>
+    <label class="row muted" style="margin:6px 0"><input type="checkbox" id="gcommon" checked> <b>📘 위키 뜻이어도 평범한 낱말은 일반 단어로</b> (사과·비행기·산불처럼 · 사람·작품·학교·회사·지역 이름은 그대로 어인정)</label>
+    <label class="row muted" style="margin:6px 0"><input type="checkbox" id="gverb" checked> <b>동사·형용사도 dict2(어인정)에 넣기</b> (게임에서 "🙌 모든 단어 사용"을 체크해야 나와요)</label>
     <label class="row muted" style="margin:6px 0"><input type="checkbox" id="geo2" checked> <b>어인정 단어는 dict2에 넣기</b> (게임이 알아서 어인정 모드에서만 써요 · 새 게임 파일 필요 · 예전 게임은 dict2를 그냥 무시해서 안전해요)</label>
     <div class="row"><button class="green" id="exg">게임용 사전 파일 2개 만들기</button></div>
     <p class="muted" id="gmsg"></p>
@@ -3238,8 +3321,19 @@ function srcKey(src){ const t = String(src || ""); return t.startsWith("포켓�
 // 위키백과·위키데이터·나무위키에서 온 뜻(고유명사: 역·학교·노래·캐릭터 등)인지
 //  · 출처 기록이 있으면 그걸로 (앞으로 찾는 뜻은 전부 기록됨)
 //  · 기록이 없던 예전 뜻은 모양으로: "가남역(Ganam station)은 …", "《가난한 사랑》은 …"처럼 단어 이름으로 시작해 은/는/이/가가 붙음
+// [2026-10] 위키 뜻이어도 첫 문장에 고유명사 표시(사람·작품·학교·회사·지역·포켓몬 등)가 없으면 평범한 낱말로 봄 (사과·비행기·산불 등)
+const PROPER_HINT = new RegExp("\\d{3,4}년|\\d+세대|배우|가수|래퍼|아이돌|선수|정치인|희극인|방송인|코미디언|감독|작가|화가|시인|소설가|음악가|성우|유튜버|포켓몬|디지몬|몬스터|캐릭터|등장인물|히어로|주인공|여동생|남동생|로봇이다|역\\(|역은|station|Station|주식회사|기업|업체|회사|그룹|밴드|브랜드|상표|제품|영화|드라마|만화|애니메이션|웹툰|게임|앨범|노래|곡이다|싱글|프로그램|방송|소설|작품|시리즈|(동|면|읍|리|군|시|구|도|정)이다|(동|면|읍|리|군|시|구)\\(|학교|대학|고등|중학|초등|다음 사람|다음과 같|다음을 가리|다음을 의미|다음의 의미|다음 뜻|영어 설명|성\\(姓\\)|성이다|성씨|이름|인명|본명|산\\(|산은|섬\\(|섬은|강\\(|강은|호\\(|호수|휴게소|공항|항구|국가|왕국|공화국|제국|도시|주\\(|지방|프로뱅스|광역시|특별시|군\\(|교회|사찰|사지|절\\(|궁\\(|궁은|성\\(城|유적|공원|경기장|병원|정당|단체|협회|재단|연맹|팀|구단|클럽|왕\\(|황제|왕후|대왕|장군|군주|마인크래프트|마블|닌텐도|대한민국의|북한의|일본의|중국의|미국의|영국의|프랑스의|독일의|러시아의|바로가기|선수단|노선|철도|고속도로|국도|대로\\(|다리\\(|빌딩|아파트|축제|대회|올림픽|리그|선거|사건|전쟁|조약|헌법|《");
+function looksCommonNoun(m){
+  const t = String(m || "").split(" / ")[0], k = t.indexOf(". "), f = k >= 0 ? t.slice(0, k + 1) : t;
+  if(String(m).indexOf("넷마블쿵쿵따/캔디바쿵쿵따") === 0) return false;
+  return !PROPER_HINT.test(f.slice(0, 120));
+}
+function gameCommonOn(){ const c = document.getElementById("gcommon"); return !c || c.checked; }
+// 게임 사전용: 위키 뜻 어인정인지 (평범한 낱말은 일반으로)
+function isEncyForGame(w, m){ return isEncyMean(w, m) && !(gameCommonOn() && looksCommonNoun(m)); }
 function isEncyMean(w, m){
   if(!m || PH.has(m)) return false;
+  if(String(m).indexOf("넷마블쿵쿵따/캔디바쿵쿵따") === 0) return true;   // 옛 끄투 사전 단어 (게임의 어인정 · 모든 단어 사용에서만)
   const k = S.src.get(w);
   if(k) return k === "wiki" || k === "wd" || k === "namu" || k === "pkm";
   const f = String(m).split(" / ")[0].trim();
@@ -3265,7 +3359,7 @@ function eoinjeongList(withVerb){
   for(let i = 0; i < W.length; i++){
     if(!hasM(i)) continue; const x = st(i); if(x === "R" || x === "X") continue;
     if(isDialectMean(M[i])){ out.set(W[i], [M[i], "d"]); nDial++; }
-    else if(isEncyMean(W[i], M[i])){ out.set(W[i], [M[i], "w"]); nEncy++; }
+    else if(isEncyForGame(W[i], M[i])){ out.set(W[i], [M[i], "w"]); nEncy++; }
   }
   if(withVerb !== false){
     const vi = rules.findIndex(r => r.id === "verb" && r.on);
@@ -3282,7 +3376,7 @@ const EO_TAG = { d:"#어인정:방언", v:"#어인정:동사", w:"#어인정" };
 function renderEoInfo(){
   const el = $("eoinfo"); if(!el || !W.length) return;
   const r = eoinjeongList();
-  el.textContent = `지금: 방언·북한어·옛말 ${fmt(r.nDial)}개 + 위키백과·위키데이터·나무위키 뜻 ${fmt(r.nEncy)}개 + 동사·형용사 ${fmt(r.nVerb)}개 = ${fmt(r.list.length)}개 (게임에서 방언·동사는 체크해야 나와요)`;
+  el.textContent = `지금: 방언·북한어·옛말 ${fmt(r.nDial)}개 + 위키백과·위키데이터·나무위키 뜻 ${fmt(r.nEncy)}개 + 동사·형용사 ${fmt(r.nVerb)}개 = ${fmt(r.list.length)}개 (게임에서 "🙌 모든 단어 사용"을 체크하면 나와요)`;
   const h = $("eoholdinfo"); if(h) h.textContent = `지금 보류함: 띄어 쓴 말 ${fmt(S.wrHold.size)}개`;
 }
 $("exeo").onclick = () => {
@@ -3298,13 +3392,17 @@ async function gzip(str){
   const stream = new Blob([str]).stream().pipeThrough(cs);
   return await new Response(stream).blob();
 }
+// [2026-10] 게임 사전에 절대 넣지 않는 말 (게임의 욕설 거르기와 같은 목록) — 직접 ✓로 살린 단어여도 빠짐
+const GAME_HARD_SUBS = ["섹스", "좆", "젖", "갈보", "화냥", "창녀", "창년", "매춘", "매음", "윤간", "빠구리", "딸딸이", "니애미", "느금", "엠창", "씨발", "씨팔", "시발놈", "개새끼", "개씹", "씹년", "씹놈", "미친놈", "미친년"];
+const GAME_HARD_EXACT = new Set(["69자세", "가공의비하멸칭", "가능충", "가상섹스", "가식웹", "가오충", "가위충", "간나새끼", "간잽이", "갈드컵", "갈보", "갈보질", "갓겜충", "강간", "개간나", "개년", "개놈", "개독교", "개병대", "개뿔", "개새", "개새끼", "개소리", "개슬람", "개쓰레기", "개씹", "개자식", "개잡년", "개잡놈", "개좆", "개지랄", "개지랄하다", "개초딩", "개티즌", "개파리", "거수기", "거지새끼", "건어물녀", "겁쟁이", "겐트위한", "격사", "견찰", "경을칠놈", "골로가다", "골빈", "공돌이", "관심병", "광년이", "구구레카스", "구라", "구라베젤", "구멍동서", "국개론", "국밥충", "군무새", "귀쟁이", "귀족노조", "그돈씨", "그롤릭스", "근첩", "글로리홀", "금발태닝양아치", "급식충", "기생오라비", "김대중교", "김치녀", "김치맨", "까라면까", "깐프", "깜둥이", "깡패", "꺼져", "꼰대", "꼴값", "꼴마초", "꼽창", "나무위키꺼라", "낙하산인사", "남만", "냄져", "너내여자가돼라", "네미", "넷카마", "노괴", "노땅", "노력충", "뇌절", "누르렁", "눈치없는새끼", "느개비", "느금마", "니가족충", "니거", "니기미", "니디티", "니똥굵다", "니미", "니미럴", "니미뽕", "니애미", "니애비", "다구리", "닥쳐", "닥쳐줘요", "단백질도둑", "달창", "닭둘기", "담탱이", "당나라군대", "대개새끼론", "대깨윤", "도둑고양이", "도태남녀", "돈미새", "돌림방", "돌림빵", "돌머리", "동방본좌라인", "동인파락호", "동탄", "돼지새끼", "되놈", "뒈지다", "듀라한", "듁수", "듣보잡", "등신", "따먹다", "따봉충", "딸감", "딸딸이", "딸딸이꾼", "딸딸이대", "딸배", "땡추", "떼국", "똘추", "똥갈보", "똥꼬충", "똥별", "똥통학교", "뚱냥이", "띠또", "띨빵", "랜선애국", "럽까", "렉카충", "로기견", "로리콘", "롤충", "리니지라이크", "리더는묵직해야한다", "리얼충", "린저씨", "마기꾼", "마도대전", "마레기", "마블충", "마크충", "만튀", "말박이", "말이야방구야", "맘충", "망코", "매직스틱", "맵찔이", "먹버", "메갈", "메갈리아", "메모위주", "메퇘지", "모쏠아다", "무나", "무뇌충", "무도충", "무료변호사", "무틀딱", "문돌이", "문슬람", "문신충", "문찐", "물박사", "뭘잘했다고울어", "므흣", "미안할짓을왜하냐", "미친개이", "미친년", "미친놈", "미친새끼", "민주에몽", "믿거조", "바나나공화국", "바르바로이", "바보멍청이해삼멍게말미잘", "반일씹덕", "발번역", "방구석코난", "방씨조선", "배급견", "배냇병신", "배박이", "배불뚝이", "번개딸딸이", "범죄두", "벤치워머", "별창", "별창녀", "병먹금", "병신", "병신과머저리", "보빨러", "보슬아치", "보전깨", "보지", "보추", "보케", "부라쿠민", "부카니스탄", "분기창녀", "불알", "붓풀어주기", "븅딱", "븅신", "블기견", "비역", "빠구리", "빠돼쌍", "빠따", "빠따충", "빡대가리", "빡추", "빨갱이", "빨통", "빨피", "뻐큐", "뻐큐머겅", "뽐거지", "사심충", "상폐녀", "새대가리", "생병신", "서융", "설명충", "성능충", "성진국", "성처리", "성추행", "성추행하다", "성폭행", "성폭행하다", "성형괴물", "섹섹보", "섹스", "섹스리스", "소중이", "손놈", "쇼미충", "쇼타콘", "수구좌파", "스꼴", "스씨", "스윗한남", "스쿼", "스투충", "스팀충", "슬람", "슴가", "시계충", "시발놈", "시비충", "시선강간", "시청도", "싸튀충", "싸패토끼단", "쌀먹", "쌀숭이", "쌍간나", "쌍년", "쌍놈", "썅", "씨댕", "씨몽키", "씨발", "씨방새", "씨부랄", "씨팔", "씹", "씹구멍", "씹년", "씹덕", "씹새끼", "씹선비", "씹순이", "씹쓰레기", "씹조개", "씹지랄", "씹창", "씹치남", "씹프제", "씹프피", "아가리파이터", "아다", "아이코라", "악플러", "안락의자장군", "안여돼", "암등이", "애널서킹", "애니프사", "애미", "애비충", "애새끼", "애정충", "앱등이", "야구스코어", "야동", "야리사", "야언좆", "야추", "야툰", "야한동영상", "얌체", "양공주", "어좁이", "언냐", "엄창", "없그레이드", "엉벅지", "엠창", "엠창인생", "여기병신하나추가요", "연예인병", "염팔히", "영감탱이", "예수쟁이", "옐로우캡", "옘병", "오늘은이걸로", "오덕갤", "오랑캐", "오유충", "오팬무", "오피스스파우스", "옥떨메", "와꾸", "왜놈", "외국놈", "외팔이", "외향형찐따", "운빨좆망겜", "운지", "운하충", "워마드", "원종단", "웨슬충", "유교걸", "유사학문", "육변기", "육시랄", "윤간", "음란마귀", "의무방어전", "의새", "이맛헬", "인등이", "인방충", "일베충", "읽씹", "임거", "임신공격", "입슈팅", "입스타", "입지메", "입진보", "입페미", "자박꼼", "자지", "잡금", "잡년", "잡놈", "잡대", "장문충", "재기해", "재능충", "잼민이", "잽머니", "저능아", "절름발이", "정게할배", "정글차이", "정민강간", "정박아", "정사충", "정속충", "젖보똥", "제기랄", "제비족", "젠신병자", "젠장", "조센", "조센삐", "조카몬", "존나", "존못", "졸라", "종간나", "종북", "좆", "좆간", "좆간나", "좆같다", "좆같이", "좆경", "좆기", "좆까", "좆나", "좆다", "좆만이", "좆망", "좆목", "좆문가", "좆물", "좆박드립", "좆반고", "좆밥", "좆빨러", "좆심", "좆중고딩", "좆집", "주체사상파", "준강간", "줘팸", "지금너만힘든줄아냐", "지니어스충", "지랄", "지랄버릇", "지랄염병버스", "지방충", "지잡대", "직캠딸", "진보대학생", "진지충", "질방귀", "짬찌", "짭새", "짱깨", "짱꼴라", "짹짹충", "쪽바리", "쪽발이", "쭉쭉빵빵", "찌질이", "찍새", "찐따", "찐찌버거", "찢갈이", "창남", "창녀", "창년", "창놈", "창조좀비", "처녀비치", "천하의개쌍놈들", "천하잡년", "철밥통", "초글링", "치나", "치녀", "치어충", "칠푼이", "카섹스", "카펫베거", "캄대남", "캐런", "캣맘", "커뮤충", "컨셉질", "코레기", "코박죽", "코인충", "콘코드라이크", "콩가루집안", "쿄레기", "쿵쾅이", "크림파이", "클베", "키모오타", "키모이", "탈조선", "탑신병자", "태도충", "탱장연", "탱키", "템줌마", "토사구패드", "토쟁이", "토착빨갱이", "토착왜구", "토착짱깨", "통구이드립", "트로피와이프", "틀딱", "파오후쿰척쿰척", "파파카츠", "판모로", "판치라", "팔이", "퍽보이", "퍽이나", "퍽퍽헉헉이맛에합니다", "폐급", "포박이", "포확찢", "폭락이", "폰팔이", "풀발기", "프리섹스", "피그사인", "피싸개", "피파충", "핑두", "핑프", "하나더하기하나는셋", "한남충", "한녀충", "한줌단", "할망구", "핫바리", "핸드볼스코어", "허벌", "헬창", "현자타임", "혐한충", "호갱", "호남자민련", "호로자식", "호론부", "호모나섹상에게이뭐야", "홍대가이", "홍팍", "화냥년", "화이트트래시", "환기충", "황금귀", "황색언론", "후다", "후레자식", "후방주의", "후빨", "후장빨개", "흡연충", "힐루미나티", "힙찔이"]);
+function gameHardBlock(w){ return GAME_HARD_EXACT.has(w) || GAME_HARD_SUBS.some(x => w.includes(x)); }
 $("exg").onclick = async () => {
   if(!W.length){ say("먼저 단어장을 불러와 주세요"); return; }
   const btn = $("exg"); btn.disabled = true; $("gmsg").textContent = "만드는 중... (몇 초 걸려요)";
   await tick();
   try{
     const noDial = $("gdial").checked, noEncy = $("genc") && $("genc").checked;
-    const L = keptIdx($("gsus").checked).filter(i => W[i].length >= 2 && !/[^가-힣]/.test(W[i]) && !(noDial && hasM(i) && isDialectMean(M[i])) && !(noEncy && hasM(i) && isEncyMean(W[i], M[i])));
+    const L = keptIdx($("gsus").checked).filter(i => W[i].length >= 2 && !/[^가-힣]/.test(W[i]) && !gameHardBlock(W[i]) && !(noDial && hasM(i) && isDialectMean(M[i])) && !(noEncy && hasM(i) && isEncyForGame(W[i], M[i])));
     // 깃허브는 파일 하나에 25MB까지만 올라가서, 넘으면 뜻을 점점 짧게 줄여서 맞춤
     const MAXB = window.__GAME_MAX || 24.5 * 1048576;
     const cut = (m, n) => { if(!n) return m; m = m.split(" / ")[0]; return m.length > n ? m.slice(0, n - 1) + "…" : m; };
@@ -3321,7 +3419,7 @@ $("exg").onclick = async () => {
     if($("geo2").checked){
       const inG = new Set(arr.map(x => x[0]));
       // [단어, 뜻, 종류] · 종류 d=방언 v=동사·형용사 w=위키 뜻 (게임이 어인정 설정 체크에 따라 씀)
-      const eo = eoinjeongList($("gverb") ? $("gverb").checked : true).list.filter(([w]) => !inG.has(w) && w.length >= 2 && !/[^가-힣]/.test(w)).map(([w, m, c]) => [w, cut(m, shortN), c]);
+      const eo = eoinjeongList($("gverb") ? $("gverb").checked : true).list.filter(([w]) => !inG.has(w) && w.length >= 2 && !/[^가-힣]/.test(w) && !gameHardBlock(w)).map(([w, m, c]) => [w, cut(m, shortN), c]);
       eoN = eo.length;
       g2 = await gzip(JSON.stringify({ v:2, kind:"eoinjeong", eo }));
     } else g2 = await gzip("[]");
@@ -3559,6 +3657,67 @@ TAB.init();
       setTimeout(() => LK.autoResume(), 2500);                   // 뜻 자동 찾기도 마찬가지
     }
   }
+})();
+</script>
+<script>
+/* 이모지 아이콘 정리: 버튼·제목·라벨 앞의 이모지를 지우고, 이모지만 있던 작은 버튼은 글자로 바꾼다 */
+(function(){
+  var LEAD=/^[\s\u200d\ufe0f\u20e3\u2600-\u27bf\u2b00-\u2bff\u2190-\u21ff\u2300-\u23ff\u3297\u3299\u00a9\u00ae\u203c\u2049\u2122\u2139\u24c2\u25aa-\u25fe]*(?:[\ud83c-\ud83e][\udc00-\udfff][\ufe0f\u200d\u20e3]*(?:[\ud83c-\ud83e][\udc00-\udfff][\ufe0f]*)*[\s]*)+/;
+  var ONLY=/^[\s\u200d\ufe0f\u20e3\u2600-\u27bf\u2b00-\u2bff\u2190-\u21ff\u2300-\u23ff]*(?:[\ud83c-\ud83e][\udc00-\udfff][\ufe0f\u200d\u20e3\s]*)*$/;
+  var SYM=/^[\s\u2600-\u27bf\u2b00-\u2bff\ufe0f]+\s+/;
+  var MAP={}, ALL=true;
+  var ANY=/(?:[\ud83c-\ud83e][\udc00-\udfff]|[\u2600-\u27bf\u2b50\u2b55\u231a\u231b\u23e9-\u23fa])[\ufe0f\u200d\u20e3]*\s?/g;
+  var TAGS="BUTTON,LABEL,H1,H2,H3,H4,H5,SUMMARY,OPTION,A,TH,LEGEND";
+  var busy=false;
+  function isEmojiOnly(t){ t=(t||"").trim(); return !!t && ONLY.test(t) && /[\ud83c-\ud83e\u2600-\u27bf]/.test(t); }
+  function fixEl(el){
+    if(!el||el.nodeType!==1||el.dataset.jdE) return;
+    var t=(el.textContent||"").trim();
+    if(el.children.length===0&&isEmojiOnly(t)){
+      var key=(el.title||el.getAttribute("aria-label")||"").trim();
+      var lab=MAP[key]||MAP[t];
+      if(lab!==undefined){ el.dataset.jdE="1"; if(lab===""){ el.style.display="none"; } else { el.textContent=lab; el.classList.add("jd-txtbtn"); } return; }
+      var cls=(el.className||"").toString();
+      if(/ico|icon|emoji/i.test(cls)&&el.tagName!=="BUTTON"){ el.dataset.jdE="1"; el.style.display="none"; return; }
+      if(el.tagName==="BUTTON"&&key){ el.dataset.jdE="1"; el.textContent=key.length>6?key.slice(0,6):key; el.classList.add("jd-txtbtn"); return; }
+      return;
+    }
+  }
+  function stripText(root){
+    var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null);
+    var n, list=[];
+    while((n=w.nextNode())) list.push(n);
+    list.forEach(function(n){
+      var p=n.parentElement; if(!p) return;
+      if(p.closest("script,style,textarea,input,[contenteditable]")) return;
+      var host=p.closest(TAGS)||p;
+      var v=n.nodeValue; if(!v||v.trim()==="") return;
+      if(isEmojiOnly(v)&&!isEmojiOnly(host.textContent)){ n.nodeValue=""; return; }
+      var nv=v.replace(LEAD,function(m){ return /^\s/.test(m)?" ":""; }).replace(SYM,"");
+      if(ALL) nv=nv.replace(ANY,"").replace(/\(\s*\)/g,"").replace(/\s{2,}/g," ");
+      if(nv!==v&&nv.trim()!=="") n.nodeValue=nv;
+    });
+  }
+  function run(root){
+    if(busy) return; busy=true;
+    try{
+      (root.querySelectorAll?root:document).querySelectorAll("button,span,div,a,label,i,b").forEach(fixEl);
+      if(root.nodeType===1) fixEl(root);
+      stripText(root.nodeType===1||root.nodeType===9?root:document.body);
+      (root.querySelectorAll?root:document).querySelectorAll("[placeholder]").forEach(function(i){ var v=i.getAttribute("placeholder"); var nv=v.replace(LEAD,""); if(nv!==v&&nv.trim()) i.setAttribute("placeholder",nv); });
+    }catch(e){}
+    busy=false;
+  }
+  function start(){
+    run(document.body);
+    var q=[], t=null;
+    new MutationObserver(function(ms){
+      if(busy) return;
+      ms.forEach(function(m){ if(m.type==="childList") m.addedNodes.forEach(function(n){ if(n.nodeType===1) q.push(n); else if(n.nodeType===3&&n.parentElement) q.push(n.parentElement); }); else if(m.type==="characterData"&&m.target.parentElement) q.push(m.target.parentElement); });
+      if(!t) t=setTimeout(function(){ t=null; var items=q.splice(0); items.forEach(function(n){ if(n.isConnected) run(n); }); },30);
+    }).observe(document.body,{childList:true,subtree:true,characterData:true});
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",start); else start();
 })();
 </script>
 </body></html>
